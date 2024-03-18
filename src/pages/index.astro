@@ -1,0 +1,127 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.astro';
+/**
+ * ## 获取表单对象的方法：
+ * 1. querySelector
+ * 2. document.forms 是当前页面所有表单对象的数组。
+ * 		a. 通过下标访问 document.forms[0]
+ * 		b. 通过名字访问 document.forms['myForm'], id 和 name 属性可以同时设置且可以不同，都会生效
+ * 3. document.formName 可以直接访问元素，但不建议，未来会移除
+ * 
+ * ## 提交表单的方法：
+ * 1. <input type="submit" value="title" />
+ * 2. <button type="submit">submit Title</button>
+ * 2. <input type="image" src="a.png" />
+ * 
+ * 表单如果有任何一个按钮，且焦点在表单中的某个控件，回车回触发提交表单 <textarea /> 例外，因为他有自己的处理回车方法（换行）
+ * 触发提交前会触发 submit 事件，可以在这个事件里进行表单验证
+ * 通过表单对象的submit 方法提交表单不会触发 submit 事件，所以需要先验证表单
+ * 
+ * ## 表单重置
+ * <input /> 和 <button /> 分别有类型为 reset 的type，重置后，页面会回到页面第一次渲染的值
+ * 点击回触发 reset 事件，也可以通过表单对象 element.reset() 触发
+ * 与submit 不同，reset方法会触发reset事件。
+ * 
+ */
+
+---
+<script>
+	const formA = document.forms['formA']
+	formA.addEventListener('submit', event => {
+		console.log(event)
+		event.preventDefault();
+	})
+	formA.addEventListener('reset', event => {
+		console.log('reset', event)
+		event.preventDefault();
+	})
+	console.log('form', formA);
+
+	const resetForm = () => {
+		formA.reset();
+	}
+
+	window.manualSubmit =() => {
+		formA.submit();
+	}
+</script>
+
+<Layout title="Welcome to Astro.">
+	<main>
+		<form id='customForm' name='formA' method='get'>
+			<input name='username' value="jack" />
+			<input 
+				type='submit' 
+				value="Submit" 
+			/>
+			<button type="submit">
+				submit
+			</button>
+			<input type="image" src="a.png"  />
+			<button type="reset">
+				reset
+			</button>
+		</form>
+		<button type='button' onclick="window.manualSubmit()"> manual submit</button>
+	</main>
+</Layout>
+
+<style>
+	main {
+		margin: auto;
+		padding: 1rem;
+		width: 800px;
+		max-width: calc(100% - 2rem);
+		color: white;
+		font-size: 20px;
+		line-height: 1.6;
+	}
+	.astro-a {
+		/* position: absolute;
+		top: -32px;
+		left: 50%;
+		transform: translatex(-50%); */
+		width: 220px;
+		/* height: auto; */
+		/* z-index: -1; */
+	}
+	h1 {
+		font-size: 4rem;
+		font-weight: 700;
+		line-height: 1;
+		text-align: center;
+		margin-bottom: 1em;
+	}
+	.text-gradient {
+		background-image: var(--accent-gradient);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-size: 400%;
+		background-position: 0%;
+	}
+	.instructions {
+		margin-bottom: 2rem;
+		border: 1px solid rgba(var(--accent-light), 25%);
+		background: linear-gradient(rgba(var(--accent-dark), 66%), rgba(var(--accent-dark), 33%));
+		padding: 1.5rem;
+		border-radius: 8px;
+	}
+	.instructions code {
+		font-size: 0.8em;
+		font-weight: bold;
+		background: rgba(var(--accent-light), 12%);
+		color: rgb(var(--accent-light));
+		border-radius: 4px;
+		padding: 0.3em 0.4em;
+	}
+	.instructions strong {
+		color: rgb(var(--accent-light));
+	}
+	.link-card-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
+		gap: 2rem;
+		padding: 0;
+	}
+</style>
