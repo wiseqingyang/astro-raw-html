@@ -1,6 +1,7 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Card from '../components/Card.astro';
+import Layout from "../layouts/Layout.astro";
+import Card from "../components/Card.astro";
+
 /**
  * ## 获取表单对象的方法：
  * 1. querySelector
@@ -8,120 +9,139 @@ import Card from '../components/Card.astro';
  * 		a. 通过下标访问 document.forms[0]
  * 		b. 通过名字访问 document.forms['myForm'], id 和 name 属性可以同时设置且可以不同，都会生效
  * 3. document.formName 可以直接访问元素，但不建议，未来会移除
- * 
+ *
  * ## 提交表单的方法：
  * 1. <input type="submit" value="title" />
  * 2. <button type="submit">submit Title</button>
  * 2. <input type="image" src="a.png" />
- * 
+ *
  * 表单如果有任何一个按钮，且焦点在表单中的某个控件，回车回触发提交表单 <textarea /> 例外，因为他有自己的处理回车方法（换行）
  * 触发提交前会触发 submit 事件，可以在这个事件里进行表单验证
  * 通过表单对象的submit 方法提交表单不会触发 submit 事件，所以需要先验证表单
- * 
+ *
  * ## 表单重置
  * <input /> 和 <button /> 分别有类型为 reset 的type，重置后，页面会回到页面第一次渲染的值
  * 点击回触发 reset 事件，也可以通过表单对象 element.reset() 触发
  * 与submit 不同，reset方法会触发reset事件。
- * 
+ *
+ * ## 表单字段
+ * 所有表单元素都是表单对象 elements 属性的一个值，这是一个有序列表，可以通过索引和 name 属性访问对端对象，顺序是以字段在hmtl中出现的顺序
+ * 有的字段 <input />、<textarea />、<button />、<select />、<fieldset />
+ * 如果有多个字段有相同的name,通过name访问会得到一个 HTMLCollection，
+ * 通过索引访问才会得到具体的表单字段元素
+ * 也可以直接通过 form.name 访问字段，但这是为了兼容设计的，实际上更推荐 elements 访问，更规范
+ * 通用属性 disabled form（只读） name readOnly tabIndex type value(file类型时 是只读的)
+ * 除了只读的属性，都可以动态修改
  */
-
 ---
+
 <script>
-	const formA = document.forms['formA']
-	formA.addEventListener('submit', event => {
-		console.log(event)
-		event.preventDefault();
-	})
-	formA.addEventListener('reset', event => {
-		console.log('reset', event)
-		event.preventDefault();
-	})
-	console.log('form', formA);
+  const formA = document.forms["formA"];
+  formA.addEventListener("submit", (event) => {
+    console.log(event);
+    event.preventDefault();
+  });
+  formA.addEventListener("reset", (event) => {
+    console.log("reset", event);
+    event.preventDefault();
+  });
+  console.log("form", formA);
 
-	const resetForm = () => {
-		formA.reset();
-	}
+  const resetForm = () => {
+    formA.reset();
+  };
 
-	window.manualSubmit =() => {
-		formA.submit();
-	}
+  const manualBtn = document.querySelector("#manual-button");
+  manualBtn?.addEventListener("click", (e) => {
+    formA.submit();
+  });
 </script>
 
 <Layout title="Welcome to Astro.">
-	<main>
-		<form id='customForm' name='formA' method='get'>
-			<input name='username' value="jack" />
-			<input 
-				type='submit' 
-				value="Submit" 
-			/>
-			<button type="submit">
-				submit
-			</button>
-			<input type="image" src="a.png"  />
-			<button type="reset">
-				reset
-			</button>
-		</form>
-		<button type='button' onclick="window.manualSubmit()"> manual submit</button>
-	</main>
+  <main>
+    <form id="customForm" name="formA" method="get">
+      <input name="username" value="jack" />
+      <input type="submit" value="Submit" />
+      <button type="submit"> submit </button>
+      <input type="image" src="a.png" />
+      <button type="reset"> reset </button>
+      <ul>
+        <li>
+          <input type="radio" name="color" value="red" />
+        </li>
+        <li>
+          <input type="radio" name="color" value="green" />
+        </li>
+        <li>
+          <input type="radio" name="color" value="yellow" />
+        </li>
+      </ul>
+
+      <input name="text" value="text" />
+    </form>
+    <button id="manual-button" type="button"> manual submit </button>
+    <a href="/introduce/">introduce page</a>
+  </main>
 </Layout>
 
 <style>
-	main {
-		margin: auto;
-		padding: 1rem;
-		width: 800px;
-		max-width: calc(100% - 2rem);
-		color: white;
-		font-size: 20px;
-		line-height: 1.6;
-	}
-	.astro-a {
-		/* position: absolute;
+  main {
+    margin: auto;
+    padding: 1rem;
+    width: 800px;
+    max-width: calc(100% - 2rem);
+    color: white;
+    font-size: 20px;
+    line-height: 1.6;
+  }
+  .astro-a {
+    /* position: absolute;
 		top: -32px;
 		left: 50%;
 		transform: translatex(-50%); */
-		width: 220px;
-		/* height: auto; */
-		/* z-index: -1; */
-	}
-	h1 {
-		font-size: 4rem;
-		font-weight: 700;
-		line-height: 1;
-		text-align: center;
-		margin-bottom: 1em;
-	}
-	.text-gradient {
-		background-image: var(--accent-gradient);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-size: 400%;
-		background-position: 0%;
-	}
-	.instructions {
-		margin-bottom: 2rem;
-		border: 1px solid rgba(var(--accent-light), 25%);
-		background: linear-gradient(rgba(var(--accent-dark), 66%), rgba(var(--accent-dark), 33%));
-		padding: 1.5rem;
-		border-radius: 8px;
-	}
-	.instructions code {
-		font-size: 0.8em;
-		font-weight: bold;
-		background: rgba(var(--accent-light), 12%);
-		color: rgb(var(--accent-light));
-		border-radius: 4px;
-		padding: 0.3em 0.4em;
-	}
-	.instructions strong {
-		color: rgb(var(--accent-light));
-	}
-	.link-card-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
-		gap: 2rem;
-		padding: 0;
-	}
+    width: 220px;
+    /* height: auto; */
+    /* z-index: -1; */
+  }
+  h1 {
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    margin-bottom: 1em;
+  }
+  .text-gradient {
+    background-image: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 400%;
+    background-position: 0%;
+  }
+  .instructions {
+    margin-bottom: 2rem;
+    border: 1px solid rgba(var(--accent-light), 25%);
+    background: linear-gradient(
+      rgba(var(--accent-dark), 66%),
+      rgba(var(--accent-dark), 33%)
+    );
+    padding: 1.5rem;
+    border-radius: 8px;
+  }
+  .instructions code {
+    font-size: 0.8em;
+    font-weight: bold;
+    background: rgba(var(--accent-light), 12%);
+    color: rgb(var(--accent-light));
+    border-radius: 4px;
+    padding: 0.3em 0.4em;
+  }
+  .instructions strong {
+    color: rgb(var(--accent-light));
+  }
+  .link-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
+    gap: 2rem;
+    padding: 0;
+  }
 </style>

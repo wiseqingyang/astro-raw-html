@@ -1,0 +1,29 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="数字伊利">
+  <main>
+    <h1>数字伊利</h1>
+  </main>
+</Layout>
+
+<style>
+  main {
+    background: radial-gradient(circle, #0942b1 3%, #0942b1 60%);
+  }
+  h1 {
+    background-image: linear-gradient(
+      90deg,
+      rgb(118, 167, 63) 0%,
+      rgb(51, 143, 118) 40%,
+      rgb(55, 141, 167) 50%,
+      rgb(117, 152, 242) 70%,
+      rgb(144, 118, 236) 100%
+    );
+    color: transparent;
+    background-size: contain;
+    background-clip: text;
+    -webkit-background-clip: text;
+  }
+</style>
